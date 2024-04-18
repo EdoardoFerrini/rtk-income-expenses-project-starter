@@ -30,7 +30,11 @@ const Login = () => {
   const { loading, userAuth } = useSelector((state) => {
     return state.users;
   });
-  console.log(loading, "----", userAuth);
+
+  if(userAuth?.userInfo?.isSuccess){
+    window.location.href = '/login/'
+  }
+  console.log(userAuth)
   return (
     <>
       <section className="relative py-16 bg-gray-50">
@@ -104,7 +108,7 @@ const Login = () => {
                   value={password}
                   onChange={onChangeHandler}
                   className="block w-full p-4 font-heading text-gray-300 placeholder-gray-300 bg-gray-50 rounded outline-none"
-                  type="text"
+                  type="password"
                   placeholder="Enter Role"
                 />
               </div>

@@ -1,13 +1,18 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { loginUserAction } from "../../redux/slice/users/usersSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
   //---Destructuring---
-  const { email, password } = formData;
+  const { username, password } = formData;
+
   //---onchange handler----
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,8 +21,19 @@ const Login = () => {
   //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log(formData);
+    dispatch(loginUserAction(formData))
   };
+
+  //select storeData
+  const { loading, userAuth } = useSelector((state) => {
+    return state.users;
+  });
+  
+  //redirect
+  if(userAuth?.userInfo?.isSuccess){
+    window.location.href = '/dashboard/'
+  }
+
   return (
     <>
       <section className="relative py-16 bg-gray-50">
@@ -29,17 +45,17 @@ const Login = () => {
                 Login
               </h4>
             </div>
-            <form action>
+            <form onSubmit={onSubmitHandler}>
               <div className="mb-4">
                 <label className="block text-sm leading-6 mb-2" htmlFor>
                   E-mail address
                 </label>
                 <input
-                  name="email"
-                  value={email}
+                  name="username"
+                  value={username}
                   onChange={onChangeHandler}
                   className="block w-full p-4 font-heading text-gray-300 placeholder-gray-300 bg-gray-50 rounded outline-none"
-                  type="email"
+                  type="text"
                   placeholder="Type e-mail"
                 />
               </div>
@@ -57,12 +73,17 @@ const Login = () => {
                 />
               </div>
               <div className="text-right mb-6">
-                <button
+                {loading ? (<button
+                  className="block w-full py-4 px-6 text-center font-heading font-medium text-base text-white bg-gray-500 hover:bg-green-600 border border-green-500 hover:border-green-600 rounded-sm transition duration-200"
+                  type="submit"
+                >
+                  Loading..
+                </button>) : (<button
                   className="block w-full py-4 px-6 text-center font-heading font-medium text-base text-white bg-green-500 hover:bg-green-600 border border-green-500 hover:border-green-600 rounded-sm transition duration-200"
                   type="submit"
                 >
-                  Sign in
-                </button>
+                  Sign In
+                </button>)}
               </div>
               <Link
                 className="block text-indigo-500 font-heading text-center hover:underline mb-6"
